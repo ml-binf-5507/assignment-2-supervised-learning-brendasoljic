@@ -70,7 +70,7 @@ def preprocess_data(df):
     # - Handle missing values
     # - Encode categorical variables (e.g., sex, cp, fbs, etc.)
     # - Ensure all columns are numeric
-    df = df.apply(pd.to_numeric, errors='coerce')
+    df = df.apply(pd.to_numeric, errors='ignore')
     df = df.fillna(df.mean())
     df = pd.get_dummies(df, columns=['sex', 'cp', 'fbs', 'restecg', 'thal', 'exang'], drop_first=True)
 
@@ -126,8 +126,19 @@ def prepare_classification_data(df, target='num'):
     # - Exclude target from features
     # - Exclude chol from features
     # - Return X (features) and y (target)
+    if target not in df.columns:
+        if "num" in df.columns:
+            target = "num"
+        else:
+            raise KeyError(f"Target column '{target}' not found in DataFrame")
+        
     y = (df[target] > 0).astype(int)
-    X = df.drop(columns=[target, "chol"])
+    
+    drop_cols = [target]
+    if "chol" in df.columns:
+        drop_cols.append("chol")
+        
+    X = df.drop(columns=drop_cols)
     return X, y
 
 

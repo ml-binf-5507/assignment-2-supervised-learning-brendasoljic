@@ -43,7 +43,7 @@ def train_logistic_regression_grid(X_train, y_train, param_grid=None):
     # - Fit on training data
     # - Return fitted GridSearchCV object
 
-    model = LogisticRegression(max_iter=1000, random_state=45)
+    model = LogisticRegression(max_iter=1000, random_state=42)
 
     grid_search = GridSearchCV(model, param_grid, cv=5, scoring="roc_auc")
     grid_search.fit(X_train, y_train)
