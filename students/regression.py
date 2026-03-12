@@ -83,15 +83,14 @@ def create_r2_heatmap(results_df, l1_ratios, alphas, output_path=None):
     heatmap_data = results_df.pivot(index="alpha", columns="l1_ratio", values="r2_score")
     
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.heatmap(heatmap_data, annot=True, cmap="viridis", cbar_kws={"label": "R² Score"}, ax=ax)
+    sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="viridis", cbar_kws={"label": "R² Score"}, annot_kws={"size": 10}, ax=ax)
 
-    ax.set_xlabel("L1 Ratio")
-    ax.set_ylabel("Alpha")
-    ax.set_title("R² Score Heatmap")
+    ax.set_xlabel("L1 Ratio", fontsize=12)
+    ax.set_ylabel("Alpha", fontsize=12)
+    ax.set_title("R² Score Heatmap", fontsize=14)
 
     if output_path:
-        plt.savefig(output_path)
-    plt.show()
+        fig.savefig(output_path, dpi=300, bbox_inches="tight")
     return fig
 
 
