@@ -42,7 +42,12 @@ def train_logistic_regression_grid(X_train, y_train, param_grid=None):
     # - Use GridSearchCV with cv=5
     # - Fit on training data
     # - Return fitted GridSearchCV object
-    pass
+
+    model = LogisticRegression(max_iter=1000, random_state=45)
+
+    grid_search = GridSearchCV(model, param_grid, cv=5, scoring="roc_auc")
+    grid_search.fit(X_train, y_train)
+    return grid_search
 
 
 def train_knn_grid(X_train, y_train, param_grid=None):
@@ -78,7 +83,11 @@ def train_knn_grid(X_train, y_train, param_grid=None):
     # - Use GridSearchCV with cv=5
     # - Fit on training data
     # - Return fitted GridSearchCV object
-    pass
+
+    model = KNeighborsClassifier()
+    grid_search = GridSearchCV(model, param_grid, cv=5, scoring="roc_auc")
+    grid_search.fit(X_train, y_train)
+    return grid_search
 
 
 def get_best_logistic_regression(X_train, y_train, X_test, y_test, param_grid=None):
@@ -110,7 +119,16 @@ def get_best_logistic_regression(X_train, y_train, X_test, y_test, param_grid=No
     # - Use train_logistic_regression_grid
     # - Extract best model
     # - Return dictionary
-    pass
+    grid_search = train_logistic_regression_grid(X_train, y_train, param_grid)
+    best_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
+    cv_results_df = pd.DataFrame(grid_search.cv_results_)
+
+    return {
+        'model': best_model,
+        'best_params': best_params,
+        'cv_results_df': cv_results_df
+    }
 
 
 def get_best_knn(X_train, y_train, X_test, y_test, param_grid=None):
@@ -143,4 +161,15 @@ def get_best_knn(X_train, y_train, X_test, y_test, param_grid=None):
     # - Use train_knn_grid
     # - Extract best model and best_k
     # - Return dictionary
-    pass
+    grid_search = train_knn_grid(X_train, y_train, param_grid)
+    best_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
+    best_k = best_params["n_neighbors"]
+    cv_results_df = pd.DataFrame(grid_search.cv_results_)
+
+    return {
+        'model': best_model,
+        'best_params': best_params,
+        'best_k': best_k,
+        'cv_results_df': cv_results_df
+    }
