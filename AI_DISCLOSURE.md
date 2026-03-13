@@ -30,25 +30,42 @@ _____ Yes     _____ No
 
 1. **What tools did you use?** (e.g., ChatGPT, Claude, GitHub Copilot)
    
-   _________________________________________________________________
+   ChatGPT
 
 2. **What specific things did you ask them to do?** (Be specific)
    
-   _________________________________________________________________
-   
+   - For the data_processing.py file, I used 
+      df = df.apply(pd.to_numeric, errors='coerce')
+      df = df.fillna(df.mean())
+      df = pd.get_dummies(df, columns=['sex', 'cp', 'fbs', 'restecg', 'thal', 'exang'], drop_first=True)
+
+      return df
+
+I was getting errors when trying to run the example_workflow.ipynb and couldn't figure out what I was doing wrong. I made sure my variables were all matching, which they were. 
+
+I asked people in the class and they said to look at the pd.to_numeric part. I initially changed errors='coerce' to errors='ignore'. This worked for the heatmap, however the following section wasn't working.
+
+Someone else suggested to encode all of the nonnumeric codes instead. I was having issues this this too, so I asked ChatGPT where I was going wrong and it put back in coerce, which I'm assuming because we still want to convert missing values to NaN, and tell the system not to use things that aren't numeric? 
+
+It also added the below section, which helped with the next part of the notebook. 
+      for col in existing_cats:
+         df[col] = df[col].fillna(df[col].mode()[0])
+
+I'm not entirely clear why it was added, I'm guessing it's to loop through the columns and show the most frequent vaue in that column, so if we're looking at sex, for example, if 0 is the most common number, it would just return 0, not 1 or NaN.
+
+I also asked it to debug the kNN classification code. It suggested to re-add in the from sklearn.metrics import roc_auc_score line again, even though we used it before. It also flagged the broken dictionary, so I had to adjust that. 
    _________________________________________________________________
 
 3. **How much of your final code came from AI vs. your own work?** (e.g., "AI gave me the formula, I wrote the loop" or "AI helped me debug an error")
    
-   _________________________________________________________________
-   
-   _________________________________________________________________
+AI helped me debug an error. Notes above, but please let me know if you want me to explain further. 
 
 4. **Can you explain your code?** (Can you walk through what each function does and why you wrote it that way?)
    
    _____ Yes, I can explain it well
    
-   _____ Mostly, but I have some questions
+   X Mostly, but I have some questions
+   * See above notes. I think I understanding but not entirely clear on those couple of changes it gave me. 
    
    _____ No, I'm not sure I understand it
 

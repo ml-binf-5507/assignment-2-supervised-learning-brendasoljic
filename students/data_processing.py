@@ -70,11 +70,25 @@ def preprocess_data(df):
     # - Handle missing values
     # - Encode categorical variables (e.g., sex, cp, fbs, etc.)
     # - Ensure all columns are numeric
-    df = df.apply(pd.to_numeric, errors='ignore')
-    df = df.fillna(df.mean())
-    df = pd.get_dummies(df, columns=['sex', 'cp', 'fbs', 'restecg', 'thal', 'exang'], drop_first=True)
+    df = df.copy()
+    df = df.replace("?", np.nan)
 
-    return df
+    categorical_cols = ['sex', 'dataset', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal']
+    existing_cats = [col for col in categorical_cols if col in df.columns]
+
+    for col in df.columns:
+        if col not in existing_cats:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
+
+    for col in existing_cats:
+        df[col] = df[col].fillna(df[col].mode()[0])
+
+    df = pd.get_dummies(df, columns=existing_cats, drop_first=True)
+
+    return df.astype(float)
 
 
 
